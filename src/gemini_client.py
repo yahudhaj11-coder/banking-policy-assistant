@@ -12,6 +12,11 @@ def generate_response(prompt: str) -> str:
     Send a prompt to Gemini and return the generated text.
     """
 
-    response = model.generate_content(prompt)
+    try:
+        response = model.generate_content(prompt)
+        return response.text
 
-    return response.text
+    except Exception as ex:
+        raise RuntimeError(
+            f"Failed to generate Gemini response: {ex}"
+        ) from ex

@@ -2,6 +2,9 @@ import streamlit as st
 
 from src.config import APP_TITLE
 from src.gemini_client import generate_response
+from src.prompts import build_prompt
+from src.retriever import retrieve_documents
+from src.vectordb import load_vector_store
 
 if "history" not in st.session_state:
     st.session_state.history = []
@@ -16,6 +19,12 @@ st.set_page_config(
 st.title(APP_TITLE)
 st.write("Ask any banking policy question.")
 
+@st.cache_resource
+def get_vector_store():
+    return load_vector_store()
+
+vector_store = get_vector_store()
+
 question = st.text_area(
     "Your Question",
     placeholder="Example: What is KYC?"
@@ -25,7 +34,17 @@ if st.button("Ask Gemini"):
     if question.strip():
 
         try:
-            with st.spinner("Thinking..."):
+            with st.spinner("Searching banking policies..."):
+                documents = retrieve_documents(
+                query=question,
+                vector_store=vector_store
+                )
+
+                prompt = build_prompt(
+                    query=question,
+                    documents=documents
+                )
+
                 answer = generate_response(question)
 
             st.subheader("Response")

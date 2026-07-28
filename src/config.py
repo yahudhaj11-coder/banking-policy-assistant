@@ -9,9 +9,11 @@ MODEL_NAME = "gemini-2.5-flash"
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
+LOCAL_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
+EMBEDDING_MODEL = "gemini-embedding-2"
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+VECTOR_DB_DIRECTORY = "vectordb"
 
 if not GEMINI_API_KEY:
     raise ValueError(
